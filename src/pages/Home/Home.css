@@ -1,0 +1,17 @@
+.home {
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
+}
+
+.home-panel {
+  width: 40%;
+  border: 1px solid black;
+  padding: 12px;
+}
+
+.top-panel {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
