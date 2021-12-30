@@ -5,10 +5,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   addItem,
   editItem,
+  selectItem,
+  deleteItem,
   addBox,
   editBox,
   selectBox,
-  selectItem,
+  deleteBox,
 } from '../../state';
 import { RootState } from '../../state/store';
 import { Entity, ID } from '../../types';
@@ -41,6 +43,7 @@ interface PanelProps {
   listEntities: Entity[];
   selectedListEntity: Entity | null;
   onEntitySelect: (entity: Entity) => void;
+  onEntityDelete: (entityID: ID) => void;
   initialValues: FormValues;
   formSchema: FormSchemaItem[];
   onFormSubmit: ActionCreatorWithPayload<FormSubmitObject>;
@@ -53,6 +56,7 @@ function Panel({
   onEntitySelect,
   initialValues,
   onFormSubmit,
+  onEntityDelete,
   formSchema: schema,
 }: PanelProps) {
   const [mode, setMode] = useState(Mode.List);
@@ -77,9 +81,16 @@ function Panel({
       {mode === Mode.List && (
         <>
           <TopPanel>
-            <button onClick={() => setMode(Mode.Form)}>
-              {selectedListEntity ? 'Edit' : 'Add'}
-            </button>
+            <div>
+              <button onClick={() => setMode(Mode.Form)}>
+                {selectedListEntity ? 'Edit' : 'Add'}
+              </button>
+              {selectedEntityID ? (
+                <button onClick={() => onEntityDelete(selectedEntityID)}>
+                  Delete
+                </button>
+              ) : null}
+            </div>
           </TopPanel>
           <List
             entities={listEntities}
@@ -114,6 +125,7 @@ export function Home() {
           dispatch(selectItem(null));
           dispatch(selectBox(box));
         }}
+        onEntityDelete={(id) => dispatch(deleteItem(id))}
       />
       <Panel
         selectedEntityID={selectedItem?.id}
@@ -128,6 +140,7 @@ export function Home() {
         )}
         selectedListEntity={selectedItem}
         onEntitySelect={(item) => dispatch(selectItem(item))}
+        onEntityDelete={(id) => dispatch(deleteItem(id))}
         formSchema={[
           { label: 'Name', name: 'name', type: 'text' },
           {
